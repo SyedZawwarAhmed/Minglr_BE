@@ -8,6 +8,7 @@ import express, {
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import pool from "../db";
+import { getResponseObject } from "../utils/getResponseObject";
 
 const app: Express = express();
 const userRouter: Router = express.Router();
@@ -30,27 +31,69 @@ userRouter.post(
         `INSERT into users (name, email, password) VALUES (?, ?, ?)`,
         [user.name, user.email, user.password]
       );
-      const [rows] = await connection.query("SELECT * FROM users");
+      const [rows]: any = await connection.query(
+        "SELECT * FROM users WHERE email = ?",
+        [user.email]
+      );
       connection.release();
-      res.json(rows);
+      const responseData = { ...rows[0] };
+      delete responseData.password;
+      res.json(
+        getResponseObject("User Successfully Registered.", {
+          user: responseData,
+        })
+      );
+    } catch (error) {
+      console.log(error);
+      next(Error("User already exists!"));
+    }
+  }
+);
+
+userRouter.post(
+  "/signin",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const user = {
+        email: req.body.email,
+        password: req.body.password,
+      };
+      const connection = await pool.getConnection();
+      const [rows]: any = await connection.query(
+        "SELECT * FROM users WHERE email = ?",
+        [user.email]
+      );
+      if (rows.length > 0) {
+        const dbUser = rows[0];
+        const isPasswordCorrect = await bcrypt.compare(
+          user.password,
+          dbUser.password
+        );
+        if (isPasswordCorrect) {
+          const jwtSecretKey = process.env.JWT_SECRET_KEY;
+          const data = {
+            time: Date(),
+            id: dbUser.id,
+            name: dbUser.name,
+            email: dbUser.email,
+            pictureUrl: dbUser.picture_url,
+            createdAt: dbUser.created_at,
+          };
+
+          const token = jwt.sign(data, jwtSecretKey as string);
+          res.statusCode = 200;
+          res.send(
+            getResponseObject("User Successfully Signed in.", { token })
+          );
+        } else {
+          res.statusCode = 401;
+          res.json({ error: "Invalid Credentials!" });
+        }
+      }
     } catch (error) {
       next(error);
     }
   }
 );
-
-userRouter.post("/generateToken", (req: Request, res: Response) => {
-  // Validate User Here
-  // Then generate JWT Token
-
-  const jwtSecretKey = process.env.JWT_SECRET_KEY;
-  const data = {
-    time: Date(),
-  };
-
-  const token = jwt.sign(data, jwtSecretKey as string);
-
-  res.send(token);
-});
 
 export default userRouter;
