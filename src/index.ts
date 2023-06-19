@@ -1,11 +1,8 @@
 import express, { Express, NextFunction, Request, Response } from "express";
-import dotenv from "dotenv";
 import userRouter from "./routes/userRouter";
 
 const app: Express = express();
 const port = 3000;
-
-dotenv.config();
 
 app.use(express.json());
 app.use(
