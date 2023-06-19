@@ -10,7 +10,6 @@ import bcrypt from "bcrypt";
 import pool from "../db";
 import { getResponseObject } from "../utils/getResponseObject";
 
-const app: Express = express();
 const userRouter: Router = express.Router();
 
 userRouter.get("/", (req: Request, res: Response) => {
@@ -25,12 +24,15 @@ userRouter.post(
         name: req.body.name,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 8),
+        pictureUrl: req.body.pictureUrl ? req.body.picture_url : null
       };
       const connection = await pool.getConnection();
+
       await connection.query(
-        `INSERT into users (name, email, password) VALUES (?, ?, ?)`,
-        [user.name, user.email, user.password]
-      );
+        `INSERT into users (name, email, password, picture_url) VALUES (?, ?, ?, ?)`,
+        [user.name, user.email, user.password, user.pictureUrl]
+        );
+      
       const [rows]: any = await connection.query(
         "SELECT * FROM users WHERE email = ?",
         [user.email]
@@ -44,7 +46,6 @@ userRouter.post(
         })
       );
     } catch (error) {
-      console.log(error);
       next(Error("User already exists!"));
     }
   }
