@@ -22,6 +22,19 @@
  *         email: email
  *         password: password
  *         pictureUrl: pictureUrl
+ *     UserSignin:
+ *       type: object
+ *       required:
+ *         - email
+ *         - password
+ *       properties:
+ *         email:
+ *           type: string
+ *         password:
+ *           type: string
+ *       example:
+ *         email: email
+ *         password: password
  */
 
 /**
@@ -39,9 +52,26 @@
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/UserSignup'
-*     responses:
+ *     responses:
  *       200:
  *         description: OK.
+ *       500:
+ *         description: Some server error
+ * /api/users/signin:
+ *   post:
+ *     summary: Sign in 
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserSignin'
+ *     responses:
+ *       200:
+ *         description: OK.
+ *       401:
+ *         description: Unauthorized
  *       500:
  *         description: Some server error
  */
