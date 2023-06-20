@@ -1,23 +1,19 @@
-import dotenv from "dotenv";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-
-dotenv.config();
+import { JWT_SECRET_KEY } from "../routes/configs";
 
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
   const token = req.body.token
-  let ddecode: any;
   jwt.verify(
     token,
-    process.env.JWT_SECRET_KEY as string,
+    JWT_SECRET_KEY as string,
     (error: any, decode: any): any => {
       if (error) {
         return next(error)
-      }
-      else {
-        ddecode = decode;
+      } else {
+        res.locals.user = decode
+        return next()
       }
     }
   );
-  return ddecode;
 }

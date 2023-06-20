@@ -30,8 +30,8 @@ userRouter.post(
       await connection.query(
         `INSERT into users (name, email, password, picture_url) VALUES (?, ?, ?, ?)`,
         [user.name, user.email, user.password, user.pictureUrl]
-        );
-      
+      );
+
       const [rows]: any = await connection.query(
         "SELECT * FROM users WHERE email = ?",
         [user.email]
