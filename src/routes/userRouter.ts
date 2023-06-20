@@ -1,3 +1,51 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     UserSignup:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *         - password
+ *       properties:
+ *         name:
+ *           type: string
+ *         email:
+ *           type: string
+ *         password:
+ *           type: string
+ *         pictureUrl:
+ *           type: string
+ *       example:
+ *         name: Zawwar
+ *         email: email
+ *         password: password
+ *         pictureUrl: pictureUrl
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: User
+ *   description: The users managing API
+ * /api/users/signup:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserSignup'
+*     responses:
+ *       200:
+ *         description: OK.
+ *       500:
+ *         description: Some server error
+ */
+
 import express, {
   NextFunction,
   Request,

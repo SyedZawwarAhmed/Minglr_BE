@@ -1,5 +1,6 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import userRouter from "./routes/userRouter";
+import { swaggerDocs } from "./swagger";
 
 const app: Express = express();
 const port = 3000;
@@ -17,6 +18,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.listen(port, () => {
   console.log(`I am running at https://localhost:${port}`);
+  swaggerDocs(app, port)
 });
 
 app.use("/api/users", userRouter);
