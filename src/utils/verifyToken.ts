@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET_KEY } from "../routes/configs";
+import { JWT_SECRET_KEY } from "../configs";
 
 export function verifyToken(req: Request, res: Response, next: NextFunction) {
   const token = req.body.token
