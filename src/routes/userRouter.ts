@@ -5,11 +5,14 @@
  *     UserSignup:
  *       type: object
  *       required:
- *         - name
+ *         - firstName
+ *         - lastName
  *         - email
  *         - password
  *       properties:
- *         name:
+ *         firstName:
+ *           type: string
+ *         lastName:
  *           type: string
  *         email:
  *           type: string
@@ -18,7 +21,8 @@
  *         pictureUrl:
  *           type: string
  *       example:
- *         name: Zawwar
+ *         firstName: Zawwar
+ *         lastName: Ahmed
  *         email: email
  *         password: password
  *         pictureUrl: pictureUrl
@@ -59,7 +63,7 @@
  *         description: Some server error
  * /api/users/signin:
  *   post:
- *     summary: Sign in 
+ *     summary: Sign in
  *     tags: [User]
  *     requestBody:
  *       required: true
@@ -70,18 +74,15 @@
  *     responses:
  *       200:
  *         description: OK.
+ *       400:
+ *         description: Bad Request
  *       401:
  *         description: Unauthorized
  *       500:
  *         description: Some server error
  */
 
-import express, {
-  NextFunction,
-  Request,
-  Response,
-  Router,
-} from "express";
+import express, { NextFunction, Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import pool from "../db";
@@ -98,16 +99,23 @@ userRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const user = {
-        name: req.body.name,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 8),
-        pictureUrl: req.body.pictureUrl ? req.body.picture_url : null
+        pictureUrl: req.body.pictureUrl ? req.body.picture_url : null,
       };
       const connection = await pool.getConnection();
 
       await connection.query(
-        `INSERT into users (name, email, password, picture_url) VALUES (?, ?, ?, ?)`,
-        [user.name, user.email, user.password, user.pictureUrl]
+        `INSERT into users (first_name, last_name, email, password, picture_url) VALUES (?, ?, ?, ?, ?)`,
+        [
+          user.firstName,
+          user.lastName,
+          user.email,
+          user.password,
+          user.pictureUrl,
+        ]
       );
 
       const [rows]: any = await connection.query(
@@ -123,7 +131,7 @@ userRouter.post(
         })
       );
     } catch (error) {
-      next(Error("User already exists!"));
+      next(error);
     }
   }
 );
@@ -152,21 +160,22 @@ userRouter.post(
           const data = {
             time: Date(),
             id: dbUser.id,
-            name: dbUser.name,
+            firstName: dbUser.first_name,
+            lastName: dbUser.last_name,
             email: dbUser.email,
             pictureUrl: dbUser.picture_url,
             createdAt: dbUser.created_at,
           };
 
           const token = jwt.sign(data, jwtSecretKey as string);
-          res.statusCode = 200;
-          res.send(
-            getResponseObject("User Successfully Signed in.", { token })
-          );
+          res
+            .status(200)
+            .json(getResponseObject("User Successfully Signed in.", { token }));
         } else {
-          res.statusCode = 401;
-          res.json({ error: "Invalid Credentials!" });
+          res.status(401).json({ error: "Invalid Credentials!" });
         }
+      } else {
+        res.status(400).json({ error: "User not registered!" });
       }
     } catch (error) {
       next(error);
