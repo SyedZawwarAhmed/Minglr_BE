@@ -85,7 +85,7 @@
 import express, { NextFunction, Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import pool from "../db";
+import pool from "../configs/db.config";
 import { getResponseObject } from "../utils/getResponseObject";
 
 const userRouter: Router = express.Router();
@@ -98,7 +98,7 @@ userRouter.post(
   "/signup",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const user = {
+      const userData = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
@@ -110,22 +110,22 @@ userRouter.post(
       await connection.query(
         `INSERT into users (first_name, last_name, email, password, picture_url) VALUES (?, ?, ?, ?, ?)`,
         [
-          user.firstName,
-          user.lastName,
-          user.email,
-          user.password,
-          user.pictureUrl,
+          userData.firstName,
+          userData.lastName,
+          userData.email,
+          userData.password,
+          userData.pictureUrl,
         ]
       );
 
       const [rows]: any = await connection.query(
         "SELECT * FROM users WHERE email = ?",
-        [user.email]
+        [userData.email]
       );
       connection.release();
       const responseData = { ...rows[0] };
       delete responseData.password;
-      res.json(
+      res.status(200).json(
         getResponseObject("User Successfully Registered.", {
           user: responseData,
         })
