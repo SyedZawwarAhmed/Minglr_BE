@@ -19,7 +19,7 @@ postRouter.get(
 
       const connection = await pool.getConnection();
       const [rows]: any = await connection.query(
-        getPaginationQuery("posts", parseInt(page)-1, parseInt(limit))
+        getPaginationQuery("posts", parseInt(page) - 1, parseInt(limit))
       );
       connection.release();
       res.status(200).json(getResponseObject("All Posts", { posts: rows }));
