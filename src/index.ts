@@ -1,6 +1,6 @@
 import express, { Express, NextFunction, Request, Response } from "express";
-import userRouter from "./routes/userRouter";
 import { swaggerDocs } from "./swagger";
+import { userRouter, postRouter } from "./routes";
 
 const app: Express = express();
 const port = 3000;
@@ -18,15 +18,16 @@ app.get("/", (req: Request, res: Response) => {
 
 app.listen(port, () => {
   console.log(`I am running at https://localhost:${port}`);
-  swaggerDocs(app, port)
+  swaggerDocs(app, port);
 });
 
 app.use("/api/users", userRouter);
+app.use("/api/posts", postRouter);
 
 // error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
 
   // Handle other errors
-  res.status(500).json({ error: err.message });
+  res.status(400).json({ error: err.message });
 });
