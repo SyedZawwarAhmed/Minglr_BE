@@ -83,7 +83,7 @@
  */
 
 import express, { Router } from "express";
-import { signinUser, signupUser } from "../controllers/users";
+import { signinUser, signupUser } from "../controllers/user.controller";
 
 const userRouter: Router = express.Router();
 
