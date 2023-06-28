@@ -3,10 +3,18 @@ import {
   LikeDataInterface,
   PostDataInterface,
 } from "../interfaces/post.interface";
+import { getOffset } from "../utils/getOffset";
 import { getResponseObject } from "../utils/getResponseObject";
-import query from "./db.service";
+import { query } from "./db.service";
 
-export async function getAll() {}
+export async function getAll(page: string = "1", limit: string = "10") {
+  const offset = getOffset(parseInt(page), parseInt(limit));
+  const results: any = await query(
+    `SELECT * FROM posts ORDER BY id DESC LIMIT ? OFFSET ?`,
+    [parseInt(limit), offset]
+  );
+  return getResponseObject("All Posts", { posts: results });
+}
 
 export async function create(postData: PostDataInterface) {
   const results = await query(
