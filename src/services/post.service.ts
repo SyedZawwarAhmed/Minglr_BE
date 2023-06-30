@@ -2,16 +2,27 @@ import {
   CommentDataInterface,
   LikeDataInterface,
   PostDataInterface,
+  getAllPostsDataInterface,
+  getPostsOfSignedInUserDataInterface,
 } from "../interfaces/post.interface";
 import { getOffset } from "../utils/getOffset";
 import { getResponseObject } from "../utils/getResponseObject";
 import { query } from "./db.service";
 
-export async function getAll(page: string = "1", limit: string = "10") {
+export async function getAll({page, limit}: getAllPostsDataInterface) {
   const offset = getOffset(parseInt(page), parseInt(limit));
   const results: any = await query(
     `SELECT * FROM posts ORDER BY id DESC LIMIT ? OFFSET ?`,
     [parseInt(limit), offset]
+  );
+  return getResponseObject("Posts of Signed in User.", { posts: results });
+}
+
+export async function getAllOfUser({userId, page, limit}: getPostsOfSignedInUserDataInterface) {
+  const offset = getOffset(parseInt(page), parseInt(limit));
+  const results: any = await query(
+    `SELECT * FROM posts WHERE user_id = ? ORDER BY id DESC LIMIT ? OFFSET ?`,
+    [userId, parseInt(limit), offset]
   );
   return getResponseObject("All Posts", { posts: results });
 }

@@ -54,6 +54,30 @@
  *         description: Unauthorized
  *       500:
  *         description: Some server error
+ * /api/posts/getPostsOfSignedInUser:
+ *   get:
+ *     summary: Get All Posts
+ *     tags: [Post]
+ *     parameters:
+ *     - name: page
+ *       in: query
+ *       required: false
+ *       schema:
+ *         type: number
+ *     - name: limit
+ *       in: query
+ *       required: false
+ *       schema:
+ *         type: number
+ *     responses:
+ *       200:
+ *         description: OK.
+ *       400:
+ *         description: Bad Request
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Some server error
  * /api/posts/createPost:
  *   post:
  *     summary: Create a new post
@@ -113,12 +137,15 @@ import {
   addCommentOnPost,
   createPost,
   getAllPosts,
+  getPostsOfSignedInUser,
   likePost,
 } from "../controllers/post.controller";
 
 const postRouter: Router = express.Router();
 
 postRouter.get("/getAllPosts", getAllPosts);
+
+postRouter.get("/getPostsOfSignedInUser", verifyUser, getPostsOfSignedInUser)
 
 postRouter.post("/createPost", verifyUser, createPost);
 

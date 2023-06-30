@@ -1,3 +1,13 @@
+export interface getAllPostsDataInterface {
+  page: string;
+  limit: string;
+}
+export interface getPostsOfSignedInUserDataInterface {
+  userId: string | number;
+  page: string;
+  limit: string;
+}
+
 export interface PostDataInterface {
   userId: number | string;
   content: string;

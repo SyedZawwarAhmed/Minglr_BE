@@ -1,17 +1,50 @@
 import { NextFunction, Request, Response } from "express";
-import { getAll, create, like, comment } from "../services/post.service";
+import {
+  getAll,
+  getAllOfUser,
+  create,
+  like,
+  comment,
+} from "../services/post.service";
 
-export async function getAllPosts(req: Request, res: Response, next: NextFunction) {
-    try {
-      const page: any = req.query.page;
-      const limit: any = req.query.limit;
-      res.status(200).json(await getAll(page, limit));
-    } catch (error) {
-      next(error);
-    }
+export async function getAllPosts(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const getAllPostsData: any = {
+      page: req.query.page ? req.query.page : "1",
+      limit: req.query.limit ? req.query.limit : "10",
+    };
+    res.status(200).json(await getAll(getAllPostsData));
+  } catch (error) {
+    next(error);
   }
+}
 
-export async function createPost(req: Request, res: Response, next: NextFunction) {
+export async function getPostsOfSignedInUser(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const getPostsOfSignedInUserData: any = {
+      userId: res.locals.user.id,
+      page: req.query.page ? req.query.page : "1",
+      limit: req.query.limit ? req.query.limit : "10",
+    };
+    res.status(200).json(await getAllOfUser(getPostsOfSignedInUserData));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function createPost(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const postData = {
       userId: res.locals.user.id,
@@ -24,17 +57,21 @@ export async function createPost(req: Request, res: Response, next: NextFunction
   }
 }
 
-export async function likePost(req: Request, res: Response, next: NextFunction) {
-    try {
-      const likeData = {
-        userId: res.locals.user.id,
-        postId: req.params.postId,
-      };
-      res.status(200).json(await like(likeData));
-    } catch (error) {
-      next(error);
-    }
+export async function likePost(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const likeData = {
+      userId: res.locals.user.id,
+      postId: req.params.postId,
+    };
+    res.status(200).json(await like(likeData));
+  } catch (error) {
+    next(error);
   }
+}
 
 export async function addCommentOnPost(
   req: Request,
