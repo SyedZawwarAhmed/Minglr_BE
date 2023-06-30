@@ -44,12 +44,12 @@
 /**
  * @swagger
  * tags:
- *   name: User
+ *   name: Auth
  *   description: The users managing API
  * /api/users/signup:
  *   post:
  *     summary: Create a new user
- *     tags: [User]
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
@@ -64,7 +64,7 @@
  * /api/users/signin:
  *   post:
  *     summary: Sign in
- *     tags: [User]
+ *     tags: [Auth]
  *     requestBody:
  *       required: true
  *       content:
