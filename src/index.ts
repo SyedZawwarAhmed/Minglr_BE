@@ -4,7 +4,7 @@ import { swaggerDocs } from "./swagger";
 import { userRouter, postRouter } from "./routes";
 
 const app: Express = express();
-const port = 3000;
+const port = 5000;
 
 app.use(cors())
 
