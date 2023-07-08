@@ -16,7 +16,7 @@ app.use(
 );
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello, this is Express + TypeScript");
+  res.send("Hello, this is Minglr.");
 });
 
 app.listen(port, () => {
