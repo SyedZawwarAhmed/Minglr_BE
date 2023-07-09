@@ -28,6 +28,11 @@ const options: swaggerJsdoc.Options = {
     //         url: "http://localhost:3000",
     //     },
     // ],
+    tags: [
+      { name: "Auth" },
+      { name: "Friend" },
+      { name: "Post" },
+    ],
     components: {
       securitySchemes: {
         bearerAuth: {

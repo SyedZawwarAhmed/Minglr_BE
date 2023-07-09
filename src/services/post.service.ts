@@ -9,16 +9,35 @@ import { getOffset } from "../utils/getOffset";
 import { getResponseObject } from "../utils/getResponseObject";
 import { query } from "./db.service";
 
-export async function getAll({page, limit}: getAllPostsDataInterface) {
+export async function getAll({ page, limit }: getAllPostsDataInterface) {
   const offset = getOffset(parseInt(page), parseInt(limit));
   const results: any = await query(
     `SELECT * FROM posts ORDER BY id DESC LIMIT ? OFFSET ?`,
     [parseInt(limit), offset]
   );
+  const userIds = results.map((post: any) => post.user_id);
+  const uniqueUserIds = [...new Set(userIds)];
+
+  const uniqueUsers: any = await Promise.all(uniqueUserIds.map(
+    async (id: any) =>
+      (await query(
+        `SELECT id, first_name, last_name, picture_url FROM users WHERE id = ?`,
+        [id]
+      ))[0]
+  ));
+
+  results.forEach((post:any) => {
+    post.author = uniqueUsers.find((user:any) => user.id === post.user_id)
+  });
+
   return getResponseObject("Posts of Signed in User.", { posts: results });
 }
 
-export async function getAllOfUser({userId, page, limit}: getPostsOfSignedInUserDataInterface) {
+export async function getAllOfUser({
+  userId,
+  page,
+  limit,
+}: getPostsOfSignedInUserDataInterface) {
   const offset = getOffset(parseInt(page), parseInt(limit));
   const results: any = await query(
     `SELECT * FROM posts WHERE user_id = ? ORDER BY id DESC LIMIT ? OFFSET ?`,
