@@ -1,7 +1,7 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors"
+import { userRouter, postRouter, friendRouter } from "./routes";
 import { swaggerDocs } from "./swagger";
-import { userRouter, postRouter } from "./routes";
 
 const app: Express = express();
 const port = 5000;
@@ -26,6 +26,7 @@ app.listen(port, () => {
 
 app.use("/api/users", userRouter);
 app.use("/api/posts", postRouter);
+app.use("/api/friends", friendRouter)
 
 // error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
