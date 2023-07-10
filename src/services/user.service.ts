@@ -33,7 +33,7 @@ export async function signin(user: UserSigninDataInterface) {
     const dbUser = rows[0];
     const isPasswordCorrect = await comparePassword(user.password, dbUser.password)
     if (isPasswordCorrect) {
-      
+
       const data = {
         time: Date(),
         id: dbUser.id,
@@ -42,12 +42,14 @@ export async function signin(user: UserSigninDataInterface) {
         email: dbUser.email,
         pictureUrl: dbUser.picture_url,
         createdAt: dbUser.created_at,
+        token: ''
       };
 
       const token = generateToken(data)
+      data.token = token
       return {
         statusCode: 200,
-        response: getResponseObject("User Successfully Signed in.", { token }),
+        response: getResponseObject("User Successfully Signed in.", { data }),
       };
     } else {
       return {
