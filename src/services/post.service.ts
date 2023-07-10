@@ -88,7 +88,7 @@ export async function comment(commentData: CommentDataInterface) {
 export async function getComments(getCommentsData: GetCommentsDataInterface) {
   const { postId, page, limit } = getCommentsData
   const offset = getOffset(parseInt(page), parseInt(limit));
-  const results: any = await query("SELECT * FROM comments WHERE post_id = ?", [getCommentsData.postId])
+  const results: any = await query("SELECT * FROM comments WHERE post_id = ? ORDER BY id DESC LIMIT ? OFFSET ?", [postId, parseInt(limit), offset])
 
   const userIds = results.map((post: any) => post.user_id);
   const uniqueUserIds = [...new Set(userIds)];
@@ -96,8 +96,8 @@ export async function getComments(getCommentsData: GetCommentsDataInterface) {
   const uniqueUsers: any = await Promise.all(uniqueUserIds.map(
     async (id: any) =>
       (await query(
-        `SELECT id, first_name, last_name, picture_url FROM users WHERE id = ? ORDER BY id DESC LIMIT ? OFFSET ?`,
-        [id, parseInt(limit), offset]
+        `SELECT id, first_name, last_name, picture_url FROM users WHERE id = ?`,
+        [id]
       ))[0]
   ));
 
@@ -105,5 +105,5 @@ export async function getComments(getCommentsData: GetCommentsDataInterface) {
     post.author = uniqueUsers.find((user: any) => user.id === post.user_id)
   });
 
-  return getResponseObject(`All Comments on post of id ${getCommentsData.postId}`, { comments: results });
+  return getResponseObject(`All Comments on post of id ${postId}`, { comments: results });
 } 
