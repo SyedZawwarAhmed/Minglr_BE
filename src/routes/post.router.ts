@@ -129,6 +129,31 @@
  *         description: OK.
  *       500:
  *         description: Some server error
+ * /api/posts/getComments/{postId}:
+ *   get:
+ *     summary: Get all comments on a post
+ *     tags: [Post]
+ *     parameters:
+ *     - name: postId
+ *       in: path
+ *       required: true
+ *       schema:
+ *         type: number
+ *     - name: page
+ *       in: query
+ *       required: false
+ *       schema:
+ *         type: number
+ *     - name: limit
+ *       in: query
+ *       required: false
+ *       schema:
+ *         type: number
+ *     responses:
+ *       200:
+ *         description: OK.
+ *       500:
+ *         description: Some server error
  */
 
 import express, { Router } from "express";
@@ -137,6 +162,7 @@ import {
   addCommentOnPost,
   createPost,
   getAllPosts,
+  getCommentsOnPost,
   getPostsOfSignedInUser,
   likePost,
 } from "../controllers/post.controller";
@@ -152,5 +178,7 @@ postRouter.post("/createPost", verifyUser, createPost);
 postRouter.post("/like/:postId", verifyUser, likePost);
 
 postRouter.post("/addComment/:postId", verifyUser, addCommentOnPost);
+
+postRouter.get("/getComments/:postId", getCommentsOnPost)
 
 export default postRouter;

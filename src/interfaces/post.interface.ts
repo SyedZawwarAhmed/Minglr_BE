@@ -24,3 +24,9 @@ export interface CommentDataInterface {
   postId: string | number;
   content: string;
 }
+
+export interface GetCommentsDataInterface {
+  postId: string | number;
+  page: string;
+  limit: string;
+}

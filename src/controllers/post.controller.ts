@@ -5,6 +5,7 @@ import {
   create,
   like,
   comment,
+  getComments,
 } from "../services/post.service";
 
 export async function getAllPosts(
@@ -88,5 +89,19 @@ export async function addCommentOnPost(
     res.status(200).json(await comment(commentData));
   } catch (error) {
     next(error);
+  }
+}
+
+export async function getCommentsOnPost(req: Request, res: Response, next: NextFunction) {
+  try {
+    const getCommentsData: any = {
+      postId: req.params.postId,
+      page: req.query.page ? req.query.page : "1",
+      limit: req.query.limit ? req.query.limit : "10",
+    }
+
+    res.status(200).json(await getComments(getCommentsData))
+  } catch (error) {
+    next(error)
   }
 }
