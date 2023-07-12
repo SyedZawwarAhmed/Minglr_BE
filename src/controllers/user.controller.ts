@@ -13,7 +13,7 @@ export async function signupUser(
       lastName: req.body.lastName,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 8),
-      pictureUrl: req.body.pictureUrl ? req.body.picture_url : null,
+      pictureUrl: req.body.pictureUrl,
     };
 
     res.status(200).json(await signup(userData));

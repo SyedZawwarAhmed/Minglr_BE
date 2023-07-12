@@ -5,6 +5,7 @@ import { getResponseObject } from "../utils/getResponseObject";
 import { query } from "./db.service";
 
 export async function signup(userData: UserSignupDataInterface) {
+  console.log(userData)
   const insertResults = await query(
     `INSERT into users (first_name, last_name, email, password, picture_url) VALUES (?, ?, ?, ?, ?)`,
     [
