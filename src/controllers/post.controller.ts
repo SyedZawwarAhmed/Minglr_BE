@@ -15,6 +15,7 @@ export async function getAllPosts(
 ) {
   try {
     const getAllPostsData: any = {
+      userId: res.locals.user.id,
       page: req.query.page ? req.query.page : "1",
       limit: req.query.limit ? req.query.limit : "10",
     };
