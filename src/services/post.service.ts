@@ -103,8 +103,10 @@ export async function like(likeData: LikeDataInterface) {
     [likeData.postId]
   );
 
+  const results = await query("SELECT * FROM posts WHERE id = ?", [likeData.userId])
+
   if (insertResults.affectedRows && updateResults.affectedRows)
-    return getResponseObject("Post successfully liked.", null);
+    return getResponseObject("Post successfully liked.", {likedPost: results[0]});
 }
 
 export async function comment(commentData: CommentDataInterface) {
@@ -117,8 +119,10 @@ export async function comment(commentData: CommentDataInterface) {
     [commentData.postId]
   );
 
+  const results = await query("SELECT * FROM posts WHERE id = ?", [commentData.userId])
+
   if (insertResults.affectedRows && updateResults.affectedRows)
-    return getResponseObject("Post successfully commented on.", null);
+    return getResponseObject("Post successfully commented on.", {commentedPost: results[0]});
 }
 
 export async function getComments(getCommentsData: GetCommentsDataInterface) {
