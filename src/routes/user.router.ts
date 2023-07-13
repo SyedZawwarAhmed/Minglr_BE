@@ -39,6 +39,15 @@
  *       example:
  *         email: email
  *         password: password
+ *     PictureUrl:
+ *       type: object
+ *       required:
+ *         - pictureUrl
+ *       properties:
+ *         pictureUrl:
+ *           type: string
+ *       example:
+ *         pictureUrl: pictureUrl
  */
 
 /**
@@ -80,15 +89,37 @@
  *         description: Unauthorized
  *       500:
  *         description: Some server error
+ * /api/users/updatePictureUrl:
+ *   put:
+ *     summary: Update Picture url of signed in user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PictureUrl'
+ *     responses:
+ *       200:
+ *         description: OK.
+ *       400:
+ *         description: Bad Request
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Some server error
  */
 
 import express, { Router } from "express";
-import { signinUser, signupUser } from "../controllers/user.controller";
+import { signinUser, signupUser, updateUserPictureUrl } from "../controllers/user.controller";
+import { verifyUser } from "../middlewares";
 
 const userRouter: Router = express.Router();
 
 userRouter.post("/signup", signupUser);
 
 userRouter.post("/signin", signinUser);
+
+userRouter.put("/updatePictureUrl", verifyUser, updateUserPictureUrl)
 
 export default userRouter;
