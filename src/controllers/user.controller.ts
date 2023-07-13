@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
-import { signin, signup } from "../services/user.service";
+import { signin, signup, updatePictureUrl } from "../services/user.service";
 
 export async function signupUser(
   req: Request,
@@ -36,5 +36,17 @@ export async function signinUser(
     res.status(statusCode).json(response);
   } catch (error) {
     next(error);
+  }
+}
+
+export async function updateUserPictureUrl(req: Request, res: Response, next: NextFunction) {
+  try {
+    const updateUserPictureUrlData = {
+      userId: res.locals.user.id,
+      pictureUrl: req.body.pictureUrl
+    }
+    res.status(200).json(await updatePictureUrl(updateUserPictureUrlData))
+  } catch (error) {
+    next(error)
   }
 }

@@ -10,3 +10,8 @@ export interface UserSigninDataInterface {
   email: string;
   password: string;
 }
+
+export interface UpdateUserPictureUrlDataInterface {
+  userId: string | number;
+  pictureUrl: string;
+}
