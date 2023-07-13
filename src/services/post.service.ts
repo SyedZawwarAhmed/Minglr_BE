@@ -10,7 +10,11 @@ import { getOffset } from "../utils/getOffset";
 import { getResponseObject } from "../utils/getResponseObject";
 import { query } from "./db.service";
 
-export async function getAll({ page, limit }: getAllPostsDataInterface) {
+export async function getAll({
+  userId,
+  page,
+  limit,
+}: getAllPostsDataInterface) {
   const offset = getOffset(parseInt(page), parseInt(limit));
   const results: any = await query(
     `SELECT * FROM posts ORDER BY id DESC LIMIT ? OFFSET ?`,
@@ -18,6 +22,20 @@ export async function getAll({ page, limit }: getAllPostsDataInterface) {
   );
   const userIds = results.map((post: any) => post.user_id);
   const uniqueUserIds = [...new Set(userIds)];
+  const likedByCurrentUserPosts = await query(
+    `SELECT post_id FROM likes WHERE user_id = ?`,
+    [userId]
+  );
+  console.log(likedByCurrentUserPosts);
+  results.forEach((post: any) => {
+    let isLikedByCurrentUser = false
+    likedByCurrentUserPosts.forEach((likedByCurrentUserPost: any) => {
+      if(post.id === likedByCurrentUserPost.post_id)  {
+        isLikedByCurrentUser = true
+      }
+    });
+    post.isLikedByCurrentUser = isLikedByCurrentUser
+  });
 
   const uniqueUsers: any = await Promise.all(
     uniqueUserIds.map(

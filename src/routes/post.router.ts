@@ -169,7 +169,7 @@ import {
 
 const postRouter: Router = express.Router();
 
-postRouter.get("/getAllPosts", getAllPosts);
+postRouter.get("/getAllPosts", verifyUser, getAllPosts);
 
 postRouter.get("/getPostsOfSignedInUser", verifyUser, getPostsOfSignedInUser)
 
