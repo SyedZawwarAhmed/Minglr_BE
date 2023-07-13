@@ -26,15 +26,15 @@ export async function getAll({
     `SELECT post_id FROM likes WHERE user_id = ?`,
     [userId]
   );
-  console.log(likedByCurrentUserPosts);
+
   results.forEach((post: any) => {
-    let isLikedByCurrentUser = false
+    let isLikedByCurrentUser = false;
     likedByCurrentUserPosts.forEach((likedByCurrentUserPost: any) => {
-      if(post.id === likedByCurrentUserPost.post_id)  {
-        isLikedByCurrentUser = true
+      if (post.id === likedByCurrentUserPost.post_id) {
+        isLikedByCurrentUser = true;
       }
     });
-    post.isLikedByCurrentUser = isLikedByCurrentUser
+    post.isLikedByCurrentUser = isLikedByCurrentUser;
   });
 
   const uniqueUsers: any = await Promise.all(
@@ -66,6 +66,20 @@ export async function getAllOfUser({
     `SELECT * FROM posts WHERE user_id = ? ORDER BY id DESC LIMIT ? OFFSET ?`,
     [userId, parseInt(limit), offset]
   );
+  const likedByCurrentUserPosts = await query(
+    `SELECT post_id FROM likes WHERE user_id = ?`,
+    [userId]
+  );
+  
+  results.forEach((post: any) => {
+    let isLikedByCurrentUser = false;
+    likedByCurrentUserPosts.forEach((likedByCurrentUserPost: any) => {
+      if (post.id === likedByCurrentUserPost.post_id) {
+        isLikedByCurrentUser = true;
+      }
+    });
+    post.isLikedByCurrentUser = isLikedByCurrentUser;
+  });
   return getResponseObject("All Posts", { posts: results });
 }
 
