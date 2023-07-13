@@ -1,4 +1,4 @@
-import { UserSigninDataInterface, UserSignupDataInterface } from "../interfaces/user.interface";
+import { UserSigninDataInterface, UserSignupDataInterface, UpdateUserPictureUrlDataInterface } from "../interfaces/user.interface";
 import { comparePassword } from "../utils/comparePassword";
 import { generateToken } from "../utils/generateToken";
 import { getResponseObject } from "../utils/getResponseObject";
@@ -64,4 +64,17 @@ export async function signin(user: UserSigninDataInterface) {
       response: { error: "User not registered!" },
     };
   }
+}
+
+export async function updatePictureUrl(updateUserPictureUrlData: UpdateUserPictureUrlDataInterface) {
+  const { userId, pictureUrl } = updateUserPictureUrlData
+  const results = await query(
+    `UPDATE users SET picture_url = ? WHERE id = ?`,
+    [
+      pictureUrl, userId
+    ]
+  );
+
+  if (results.affectedRows)
+    return getResponseObject(`PictureUrl successfully updated of user with id ${userId}.`, null);
 }
